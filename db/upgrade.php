@@ -29,7 +29,7 @@
  * @return bool
  */
 function xmldb_local_recompletion_upgrade($oldversion) {
-    global $DB;
+    global $DB, $OUTPUT;
 
     $dbman = $DB->get_manager();
 
