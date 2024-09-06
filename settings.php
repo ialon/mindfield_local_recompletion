@@ -68,11 +68,37 @@ if ($hassiteconfig) {
 
     $settings->add(new admin_setting_configtext('local_recompletion/recompletionemailsubject',
         new lang_string('recompletionemailsubject', 'local_recompletion'),
-        new lang_string('recompletionemailsubject_help', 'local_recompletion'), '', PARAM_TEXT));
+        new lang_string('recompletionemailsubject_help', 'local_recompletion'),
+        new lang_string('recompletionemaildefaultsubject', 'local_recompletion'),
+        PARAM_TEXT)
+    );
 
     $settings->add(new admin_setting_confightmleditor('local_recompletion/recompletionemailbody',
         new lang_string('recompletionemailbody', 'local_recompletion'),
-        new lang_string('recompletionemailbody_help', 'local_recompletion'), ''));
+        new lang_string('recompletionemailbody_help', 'local_recompletion'),
+        new lang_string('recompletionemaildefaultbody', 'local_recompletion'))
+    );
+
+    $settings->add(new admin_setting_configcheckbox('local_recompletion/reminderemailenable',
+        new lang_string('reminderemailenable', 'local_recompletion'),
+        new lang_string('reminderemailenable_help', 'local_recompletion'), 1));
+
+    $settings->add(new admin_setting_configduration('local_recompletion/reminderemaildays',
+            new lang_string('reminderemaildays', 'local_recompletion'),
+            new lang_string('reminderemaildays_help', 'local_recompletion'), 5*DAYSECS, PARAM_INT));
+
+    $settings->add(new admin_setting_configtext('local_recompletion/reminderemailsubject',
+        new lang_string('reminderemailsubject', 'local_recompletion'),
+        new lang_string('reminderemailsubject_help', 'local_recompletion'), 
+        new lang_string('reminderemaildefaultsubject', 'local_recompletion'),
+        PARAM_TEXT)
+    );
+
+    $settings->add(new admin_setting_confightmleditor('local_recompletion/reminderemailbody',
+        new lang_string('reminderemailbody', 'local_recompletion'),
+        new lang_string('reminderemailbody_help', 'local_recompletion'),
+        new lang_string('reminderemaildefaultbody', 'local_recompletion'))
+    );
 
     $settings->add(new admin_setting_configcheckbox('local_recompletion/recompletionunenrolenable',
         new lang_string('recompletionunenrolenable', 'local_recompletion'),

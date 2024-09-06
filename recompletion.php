@@ -80,6 +80,11 @@ $setnames = [
     'recompletionemailsubject',
     'recompletionemailbody',
     'recompletionemailbody_format',
+    'reminderemailenable',
+    'reminderemaildays',
+    'reminderemailsubject',
+    'reminderemailbody',
+    'reminderemailbody_format',
     'assignevent',
     'nextresettime',
     'resetquizoverride',
@@ -115,6 +120,10 @@ if ($form->is_cancelled()) {
         $value = 0;
 
         if ($name === 'recompletionemailsubject' || $name === 'recompletionemailbody') {
+            $value = '';
+        }
+
+        if ($name === 'reminderemailsubject' || $name === 'reminderemailbody') {
             $value = '';
         }
 

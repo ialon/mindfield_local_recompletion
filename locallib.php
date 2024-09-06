@@ -101,6 +101,11 @@ function local_recompletion_set_form_data($mformdata) {
         $data['recompletionemailbody_format'] = $recompletionemailbody['format'];
         $data['recompletionemailbody'] = $recompletionemailbody['text'];
     }
+    if (key_exists('reminderemailbody', $data)) {
+        $reminderemailbody = $data['reminderemailbody'];
+        $data['reminderemailbody_format'] = $reminderemailbody['format'];
+        $data['reminderemailbody'] = $reminderemailbody['text'];
+    }
 
     return (object) $data;
 }
@@ -118,9 +123,14 @@ function local_recompletion_get_data(array $data) {
     if (isset($result['recompletionemailbody']) && !isset($result['recompletionemailbody_format'])) {
         $result['recompletionemailbody_format'] = FORMAT_HTML;
     }
+    if (isset($result['reminderemailbody']) && !isset($result['reminderemailbody_format'])) {
+        $result['reminderemailbody_format'] = FORMAT_HTML;
+    }
     // Prepare email body for editor.
     $emailbody = array('text' => $result['recompletionemailbody'], 'format' => $result['recompletionemailbody_format']);
     $result['recompletionemailbody'] = $emailbody;
+    $emailbody = array('text' => $result['reminderemailbody'], 'format' => $result['reminderemailbody_format']);
+    $result['reminderemailbody'] = $emailbody;
 
     return $result;
 }
@@ -163,6 +173,10 @@ function local_recompletion_get_config($course) {
         'recompletionemailbody' => '',
         'recompletionemailbody_format' => FORMAT_HTML,
         'recompletionemailsubject' => '',
+        'reminderemailenable' => 0,
+        'reminderemailbody' => '',
+        'reminderemailbody_format' => FORMAT_HTML,
+        'reminderemailsubject' => '',
         'deletegradedata' => 0,
         'nextresettime' => 0,
         'course' => null    // This isn't in the form.

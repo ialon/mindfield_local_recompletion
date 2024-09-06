@@ -72,6 +72,11 @@ class local_recompletion_recompletion_form extends moodleform {
         $mform->addHelpButton('recompletionemailenable', 'recompletionemailenable', 'local_recompletion');
         $mform->hideIf('recompletionemailenable', 'recompletiontype', 'eq', '');
 
+        $mform->addElement('checkbox', 'reminderemailenable', get_string('reminderemailenable', 'local_recompletion'));
+        $mform->setDefault('reminderemailenable', $config->reminderemailenable);
+        $mform->addHelpButton('reminderemailenable', 'reminderemailenable', 'local_recompletion');
+        $mform->hideIf('reminderemailenable', 'recompletiontype', 'eq', '');
+
         $mform->addElement('checkbox', 'recompletionunenrolenable', get_string('recompletionunenrolenable', 'local_recompletion'));
         $mform->setDefault('recompletionunenrolenable', $config->recompletionunenrolenable);
         $mform->addHelpButton('recompletionunenrolenable', 'recompletionunenrolenable', 'local_recompletion');
@@ -99,6 +104,8 @@ class local_recompletion_recompletion_form extends moodleform {
         // Email Notification settings.
         $mform->addElement('header', 'emailheader', get_string('emailrecompletiontitle', 'local_recompletion'));
         $mform->setExpanded('emailheader', false);
+
+        // Recompletion email settings.
         $mform->addElement('text', 'recompletionemailsubject', get_string('recompletionemailsubject', 'local_recompletion'),
                 'size = "80"');
         $mform->setType('recompletionemailsubject', PARAM_TEXT);
@@ -113,6 +120,32 @@ class local_recompletion_recompletion_form extends moodleform {
         $mform->addHelpButton('recompletionemailbody', 'recompletionemailbody', 'local_recompletion');
         $mform->disabledIf('recompletionemailbody', 'recompletiontype', 'eq', '');
         $mform->disabledIf('recompletionemailbody', 'recompletionemailenable', 'notchecked');
+
+        // Reminder email settings.
+        $mform->addElement('header', 'reminderemailheader', get_string('emailremindertitle', 'local_recompletion'));
+        $mform->setExpanded('reminderemailheader', false);
+
+        $options = ['optional' => false, 'defaultunit' => 86400];
+        $mform->addElement('duration', 'reminderemaildays', get_string('reminderemaildays', 'local_recompletion'), $options);
+        $mform->addHelpButton('reminderemaildays', 'reminderemaildays', 'local_recompletion');
+        $mform->setDefault('reminderemaildays', $config->reminderemaildays);
+        $mform->disabledIf('reminderemaildays', 'recompletiontype', 'eq', '');
+        $mform->disabledIf('reminderemaildays', 'reminderemailenable', 'notchecked');
+
+        $mform->addElement('text', 'reminderemailsubject', get_string('reminderemailsubject', 'local_recompletion'),
+                'size = "80"');
+        $mform->setType('reminderemailsubject', PARAM_TEXT);
+        $mform->addHelpButton('reminderemailsubject', 'reminderemailsubject', 'local_recompletion');
+        $mform->disabledIf('reminderemailsubject', 'recompletiontype', 'eq', '');
+        $mform->disabledIf('reminderemailsubject', 'reminderemailenable', 'notchecked');
+        $mform->setDefault('reminderemailsubject', $config->reminderemailsubject);
+
+        $mform->addElement('editor', 'reminderemailbody', get_string('reminderemailbody', 'local_recompletion'),
+            $editoroptions);
+        $mform->setDefault('reminderemailbody', ['text' => $config->reminderemailbody, 'format' => FORMAT_HTML]);
+        $mform->addHelpButton('reminderemailbody', 'reminderemailbody', 'local_recompletion');
+        $mform->disabledIf('reminderemailbody', 'recompletiontype', 'eq', '');
+        $mform->disabledIf('reminderemailbody', 'reminderemailenable', 'notchecked');
 
         // Advanced recompletion settings.
         // Delete data section.

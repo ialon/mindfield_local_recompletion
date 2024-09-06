@@ -49,6 +49,8 @@ $string['resetmycompletion'] = 'Reset my activity completion';
 $string['recompletiontask'] = 'Check for users that need to recomplete';
 $string['completionnotenabled'] = 'Completion is not enabled in this course';
 $string['recompletionnotenabledincourse'] = 'Recompletion is not enabled in courseid: {$a}';
+
+// Recompletion email
 $string['recompletionemailenable'] = 'Send recompletion message';
 $string['recompletionemailenable_help'] = 'Enable email messaging to notifiy users that recompletion is required';
 $string['recompletionemailsubject'] = 'Recompletion message subject';
@@ -71,6 +73,33 @@ The following placeholders may be included in the message:
 * User fullname {$a->fullname}
 * Username {$a->username}';
 $string['recompletionemaildefaultbody'] = 'Hi there, please recomplete the course {$a->coursename} {$a->link}';
+
+// Reminder email
+$string['reminderemailenable'] = 'Send reminder message';
+$string['reminderemailenable_help'] = 'Enable email messaging to notifiy users that recompletion is coming up';
+$string['reminderemaildays'] = 'Reminder message days';
+$string['reminderemaildays_help'] = 'Set the number of days before recompletion that the email is sent';
+$string['reminderemailsubject'] = 'Reminder message subject';
+$string['reminderemailsubject_help'] = 'A custom reminder email subject may be added as plain text
+
+The following placeholders may be included in the message:
+
+* Course name {$a->coursename}
+* User fullname {$a->fullname}';
+$string['reminderemaildefaultsubject'] = 'Course recompletion coming up';
+$string['reminderemailbody'] = 'Reminder message body';
+$string['reminderemailbody_help'] = 'A custom reminder email subject may be added as plain text or Moodle-auto format, including HTML tags and multi-lang tags
+
+The following placeholders may be included in the message:
+
+* Course name {$a->coursename}
+* Link to course {$a->link}
+* Link to user\'s profile page {$a->profileurl}
+* User email {$a->email}
+* User fullname {$a->fullname}
+* Username {$a->username}';
+$string['reminderemaildefaultbody'] = 'Hi {$a->username}, </br>Your course is about to expire: {$a->link}';
+
 $string['advancedrecompletiontitle'] = 'Advanced';
 $string['deletegradedata'] = 'Delete all grades for the user';
 $string['deletegradedata_help'] = 'Delete current grade completion data from grade_grades table. Grade recompletion data is permanently deleted but data retained in Grade history data table.';
@@ -79,6 +108,7 @@ $string['archivecompletiondata_help'] = 'Writes completion data to the local_rec
 $string['forcearchivecompletiondata'] = 'Force archive completion data';
 $string['forcearchivecompletiondata_help'] = 'If enabled, completion data archiving will be forced on for all course recompletions. This can prevent accidental data loss.';
 $string['emailrecompletiontitle'] = 'Custom recompletion message settings';
+$string['emailremindertitle'] = 'Custom reminder message settings';
 $string['eventrecompletion'] = 'Course recompletion';
 $string['assignattempts'] = 'Assign attempts';
 $string['assignattempts_help'] = 'How to handle assignment attempts within the course.
