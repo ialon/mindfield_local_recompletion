@@ -240,7 +240,19 @@ class check_recompletion extends \core\task\scheduled_task {
             $subject = get_string('recompletionemaildefaultsubject', 'local_recompletion', $a);
         }
         // Directly emailing recompletion message rather than using messaging.
-        email_to_user($userrecord, $from, $subject, $messagetext, $messagehtml);
+        $result = email_to_user($userrecord, $from, $subject, $messagetext, $messagehtml);
+
+        // Create log for the email.
+        $log = new \stdClass();
+        $log->userid = $userid;
+        $log->course = $course->id;
+        $log->subject = $subject;
+        $log->message = $messagetext;
+        $log->messagehtml = $messagehtml;
+        $log->success = $result;
+        $log->timecreated = time();
+
+        $DB->insert_record('local_recompletion_log', $log);
     }
 
     /**

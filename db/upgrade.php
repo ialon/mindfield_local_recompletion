@@ -1021,5 +1021,34 @@ function xmldb_local_recompletion_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2023112704, 'local', 'recompletion');
     }
 
+    if ($oldversion < 2023112707) {
+
+        // Define table local_recompletion_log to be created.
+        $table = new xmldb_table('local_recompletion_log');
+
+        // Adding fields to table local_recompletion_log.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('course', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('subject', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('message', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('messagehtml', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('success', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table local_recompletion_log.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+        $table->add_key('course', XMLDB_KEY_FOREIGN, ['course'], 'course', ['id']);
+
+        // Conditionally launch create table for local_recompletion_log.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Recompletion savepoint reached.
+        upgrade_plugin_savepoint(true, 2023112707, 'local', 'recompletion');
+    }
+
     return true;
 }
