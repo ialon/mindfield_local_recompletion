@@ -68,7 +68,8 @@ The following placeholders may be included in the message:
 * Link to course {$a->link}
 * Link to user\'s profile page {$a->profileurl}
 * User email {$a->email}
-* User fullname {$a->fullname}';
+* User fullname {$a->fullname}
+* Username {$a->username}';
 $string['recompletionemaildefaultbody'] = 'Hi there, please recomplete the course {$a->coursename} {$a->link}';
 $string['advancedrecompletiontitle'] = 'Advanced';
 $string['deletegradedata'] = 'Delete all grades for the user';
