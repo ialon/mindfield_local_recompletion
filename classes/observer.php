@@ -100,6 +100,12 @@ class observer {
                         'name' => 'recompletionemailbody_format',
                         'value' => FORMAT_HTML]);
                 }
+                if ($key === 'reminderemailbody' && !empty($value)) {
+                    $DB->insert_record('local_recompletion_config', [
+                        'course' => $event->courseid,
+                        'name' => 'reminderemailbody_format',
+                        'value' => FORMAT_HTML]);
+                }
                 if ($key === 'recompletionschedule' && !empty($value)) {
                     $nextresttime = local_recompletion_calculate_schedule_time($value);
                     $DB->insert_record('local_recompletion_config', [
