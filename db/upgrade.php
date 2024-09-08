@@ -1021,7 +1021,7 @@ function xmldb_local_recompletion_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2023112704, 'local', 'recompletion');
     }
 
-    if ($oldversion < 2023112707) {
+    if ($oldversion < 2023112707.01) {
 
         // Define table local_recompletion_log to be created.
         $table = new xmldb_table('local_recompletion_log');
@@ -1047,7 +1047,7 @@ function xmldb_local_recompletion_upgrade($oldversion) {
         }
 
         // Recompletion savepoint reached.
-        upgrade_plugin_savepoint(true, 2023112707, 'local', 'recompletion');
+        upgrade_plugin_savepoint(true, 2023112707.01, 'local', 'recompletion');
     }
 
     if ($oldversion < 2023112707.02) {
