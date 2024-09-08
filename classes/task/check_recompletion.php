@@ -103,7 +103,9 @@ class check_recompletion extends \core\task\scheduled_task {
                   JOIN {local_recompletion_config} r4 ON r4.course = cc.course AND r4.name = 'reminderemaildays'
                   JOIN {local_recompletion_config} r5 ON r5.course = cc.course AND r5.name = 'reminderemailenable'
                   JOIN {course} c ON c.id = cc.course
+             LEFT JOIN {local_recompletion_log} l ON l.userid = cc.userid AND l.completion = cc.id
                  WHERE c.enablecompletion = ".COMPLETION_ENABLED."
+                   AND l.id IS NULL
                    AND cc.timecompleted > 0
                    AND (cc.timecompleted + ".$DB->sql_cast_char2int('r2.value')." - ".$DB->sql_cast_char2int('r4.value').") < ?
                    AND r5.value = 1";
@@ -125,7 +127,9 @@ class check_recompletion extends \core\task\scheduled_task {
                   JOIN {local_recompletion_config} r5 ON r5.course = cc.course AND r5.name = 'reminderemaildays'
                   JOIN {local_recompletion_config} r6 ON r6.course = cc.course AND r6.name = 'reminderemailenable'
                   JOIN {course} c ON c.id = cc.course
+             LEFT JOIN {local_recompletion_log} l ON l.userid = cc.userid AND l.completion = cc.id
                  WHERE c.enablecompletion = ".COMPLETION_ENABLED."
+                   AND l.id IS NULL
                    AND cc.timecompleted > 0
                    AND r6.value = 1";
         $recompletions = $DB->get_records_sql($sql, [$now]);
@@ -214,7 +218,7 @@ class check_recompletion extends \core\task\scheduled_task {
 
             // Now notify user.
             if ($config->reminderemailenable) {
-                $this->notify_user($user->userid, $course, $config->reminderemailsubject, $config->reminderemailbody);
+                $this->notify_user($user->userid, $course, $config->reminderemailsubject, $config->reminderemailbody, $user->id);
             }
         }
     }
@@ -267,9 +271,11 @@ class check_recompletion extends \core\task\scheduled_task {
      * Notify user of recompletion.
      * @param \int $userid - user id
      * @param \stdclass $course - record from course table.
-     * @param \stdClass $config - recompletion config.
+     * @param \string $subject - email subject.
+     * @param \string $body - email body.
+     * @param \int $completionid - course_completions id.
      */
-    protected function notify_user($userid, $course, $subject, $body) {
+    protected function notify_user($userid, $course, $subject, $body, $completionid = null) {
         global $DB, $CFG;
 
         $userrecord = $DB->get_record('user', ['id' => $userid]);
@@ -315,6 +321,7 @@ class check_recompletion extends \core\task\scheduled_task {
         $log = new \stdClass();
         $log->userid = $userid;
         $log->course = $course->id;
+        $log->completion = $completionid;
         $log->subject = $subject;
         $log->message = $messagetext;
         $log->messagehtml = $messagehtml;

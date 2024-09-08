@@ -1050,5 +1050,26 @@ function xmldb_local_recompletion_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2023112707, 'local', 'recompletion');
     }
 
+    if ($oldversion < 2023112707.02) {
+
+        // Define field completion to be added to local_recompletion_log.
+        $table = new xmldb_table('local_recompletion_log');
+        $field = new xmldb_field('completion', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'course');
+
+        // Conditionally launch add field completion.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define key completion (foreign) to be added to local_recompletion_log.
+        $key = new xmldb_key('completion', XMLDB_KEY_FOREIGN, ['completion'], 'course_completions', ['id']);
+
+        // Launch add key completion.
+        $dbman->add_key($table, $key);
+
+        // Recompletion savepoint reached.
+        upgrade_plugin_savepoint(true, 2023112707.02, 'local', 'recompletion');
+    }
+
     return true;
 }

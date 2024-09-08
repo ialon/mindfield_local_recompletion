@@ -181,6 +181,14 @@ class reminder_email_test extends \advanced_testcase {
         $this->assertStringContainsString($body, quoted_printable_decode($result[0]->body));
         $this->assertSame($user1->email, $result[0]->to);
 
+        // Run scheduled task.
+        $task = new \local_recompletion\task\check_recompletion();
+        $task->execute();
+
+        // Check that email is only sent once.
+        $this->assertSame(1, $sink->count());
+        $result = $sink->get_messages();
+
         $sink->close();
     }
 }
