@@ -152,6 +152,10 @@ class local_recompletion_recompletion_form extends moodleform {
         $mform->addElement('header', 'advancedheader', get_string('advancedrecompletiontitle', 'local_recompletion'));
         $mform->setExpanded('advancedheader', false);
 
+        $mform->addElement('checkbox', 'resetunenrolsuser', get_string('resetunenrolsuser', 'local_recompletion'));
+        $mform->setDefault('resetunenrolsuser', $config->resetunenrolsuser);
+        $mform->addHelpButton('resetunenrolsuser', 'resetunenrolsuser', 'local_recompletion');
+
         $mform->addElement('checkbox', 'deletegradedata', get_string('deletegradedata', 'local_recompletion'));
         $mform->setDefault('deletegradedata', $config->deletegradedata);
         $mform->addHelpButton('deletegradedata', 'deletegradedata', 'local_recompletion');
@@ -175,6 +179,7 @@ class local_recompletion_recompletion_form extends moodleform {
             $fqn = 'local_recompletion\\local\\restrictions\\' . $plugin;
             $fqn::editingform($mform);
         }
+        $mform->disabledIf('resetunenrolsuser', 'recompletiontype', 'eq', '');
         $mform->disabledIf('deletegradedata', 'recompletiontype', 'eq', '');
         $mform->disabledIf('archivecompletiondata', 'recompletiontype', 'eq', '');
         $mform->disabledIf('archivecompletiondata', 'forcearchive', 'eq');

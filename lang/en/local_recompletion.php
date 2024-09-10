@@ -101,6 +101,8 @@ The following placeholders may be included in the message:
 $string['reminderemaildefaultbody'] = 'Hi {$a->username}, </br>Your course is about to expire: {$a->link}';
 
 $string['advancedrecompletiontitle'] = 'Advanced';
+$string['resetunenrolsuser'] = 'User is unenrolled';
+$string['resetunenrolsuser_help'] = 'If enabled the user will be unenrolled from the course when recompletion is triggered.';
 $string['deletegradedata'] = 'Delete all grades for the user';
 $string['deletegradedata_help'] = 'Delete current grade completion data from grade_grades table. Grade recompletion data is permanently deleted but data retained in Grade history data table.';
 $string['archivecompletiondata'] = 'Archive completion data';

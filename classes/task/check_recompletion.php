@@ -385,6 +385,27 @@ class check_recompletion extends \core\task\scheduled_task {
             }
         }
 
+        // Now unenroll the user.
+        if (!empty($config->resetunenrolsuser) && $config->resetunenrolsuser) {
+            $instances = enrol_get_instances($course->id, true);
+
+            foreach ($instances as $instance) {
+                if (!$ue = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid))) {
+                    continue;
+                }
+                if (!enrol_is_enabled($instance->enrol)) {
+                    continue;
+                }
+                if (!$plugin = enrol_get_plugin($instance->enrol)) {
+                    continue;
+                }
+                if (!$plugin->allow_unenrol_user($instance, $ue)) {
+                    continue;
+                }
+                $plugin->unenrol_user($instance, $ue->userid);
+            }
+        }
+
         // Now notify user.
         if ($config->recompletionemailenable) {
             $this->notify_user($userid, $course, $config->recompletionemailsubject, $config->recompletionemailbody);

@@ -73,6 +73,7 @@ $setnames = [
     'recompletiontype',
     'recompletionduration',
     'recompletionschedule',
+    'resetunenrolsuser',
     'deletegradedata',
     'archivecompletiondata',
     'recompletionemailenable',

@@ -104,6 +104,12 @@ if ($hassiteconfig) {
         new lang_string('recompletionunenrolenable', 'local_recompletion'),
         new lang_string('recompletionunenrolenable_help', 'local_recompletion'), 0));
 
+    $settings->add(new admin_setting_configcheckbox('local_recompletion/resetunenrolsuser',
+        new lang_string('resetunenrolsuser', 'local_recompletion'),
+        new lang_string('resetunenrolsuser_help', 'local_recompletion'),
+        1)
+    );
+
     $settings->add(new admin_setting_configcheckbox('local_recompletion/deletegradedata',
         new lang_string('deletegradedata', 'local_recompletion'),
         new lang_string('deletegradedata_help', 'local_recompletion'), 1));

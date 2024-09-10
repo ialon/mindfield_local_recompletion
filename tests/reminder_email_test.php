@@ -39,9 +39,12 @@ class reminder_email_test extends \advanced_testcase {
         $DB->delete_records('local_recompletion_config', ['course' => $courseid]);
 
         $defaultconfig = [
-            'recompletiontype' => 'ondemand',
-            'recompletionunenrolenable' => 1,
+            'recompletiontype' => 'schedule',
+            'recompletionschedule' => '6 months',
+            'nextresettime' => time() + 7*DAYSECS,
             'archivecompletiondata' => 0,
+            'recompletionunenrolenable' => 0,
+            'resetunenrolsuser' => 0,
             'deletegradedata' => 1,
             'recompletionemailenable' => 0,
             'reminderemailenable' => 0
@@ -83,8 +86,8 @@ class reminder_email_test extends \advanced_testcase {
         $enrol->enrol_user($enrolinstance, $user2->id, $studentrole->id);
         $enrol->enrol_user($enrolinstance, $user3->id, $studentrole->id);
 
-        // Make sure we trigger reset on un-enrolment.
-        $this->set_up_recompletion($course->id);
+        // Test scheduled recompletion.
+        $this->set_up_recompletion($course->id, []);
 
         // Catch the emails.
         $sink = $this->redirectEmails();
@@ -112,6 +115,7 @@ class reminder_email_test extends \advanced_testcase {
         $this->set_up_recompletion($course->id, [
             'recompletiontype' => 'period',
             'recompletionduration' => YEARSECS,
+            'recompletionunenrolenable' => 1,
             'reminderemailenable' => 1,
             'reminderemaildays' => 15*DAYSECS,
             'reminderemailsubject' => $subject,
@@ -137,7 +141,7 @@ class reminder_email_test extends \advanced_testcase {
         $task = new \local_recompletion\task\check_recompletion();
         $task->execute();
 
-        // Check that exactly one emails was sent.
+        // Check that exactly one email was sent.
         $this->assertSame(1, $sink->count());
         $result = $sink->get_messages();
 
@@ -159,9 +163,6 @@ class reminder_email_test extends \advanced_testcase {
 
         // Test scheduled recompletion.
         $this->set_up_recompletion($course->id, [
-            'recompletiontype' => 'schedule',
-            'recompletionschedule' => '6 months',
-            'nextresettime' => time() + 7*DAYSECS,
             'reminderemailenable' => 1,
             'reminderemaildays' => 10*DAYSECS,
             'reminderemailsubject' => $subject,
@@ -172,6 +173,7 @@ class reminder_email_test extends \advanced_testcase {
         $task = new \local_recompletion\task\check_recompletion();
         $task->execute();
 
+        $result = $sink->get_messages();
         // Check that exactly one emails was sent.
         $this->assertSame(1, $sink->count());
         $result = $sink->get_messages();
@@ -189,6 +191,49 @@ class reminder_email_test extends \advanced_testcase {
         $this->assertSame(1, $sink->count());
         $result = $sink->get_messages();
 
+        $sink->close();
+    }
+
+    /**
+     * Test a user is un-enrolled based on course settings.
+     */
+    function test_user_is_unenrolled_based_on_settings() {
+        global $CFG, $DB;
+
+        $this->resetAfterTest();
+
+        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $user = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
+
+        // Catch the emails.
+        $sink = $this->redirectEmails();
+
+        // Complete the course for user.
+        $compluser = new \completion_completion(['userid' => $user->id, 'course' => $course->id]);
+        $this->assertFalse($compluser->is_complete());
+        $compluser->mark_complete(time() - 2*WEEKSECS);
+        $compluser = new \completion_completion(['userid' => $user->id, 'course' => $course->id]);
+        $this->assertTrue($compluser->is_complete());
+
+        // Test scheduled recompletion.
+        $this->set_up_recompletion($course->id, [
+            'recompletionunenrolenable' => 1,
+            'resetunenrolsuser' => 1,
+            'nextresettime' => time() - DAYSECS
+        ]);
+
+        // Check that the user is enrolled
+        $this->assertTrue(is_enrolled(\context_course::instance($course->id), $user, '', true));
+
+        // Run scheduled task.
+        $task = new \local_recompletion\task\check_recompletion();
+        $task->execute();
+
+        // Check that the user is unenrolled
+        $this->assertFalse(is_enrolled(\context_course::instance($course->id), $user, '', true));
+
+        // Close the email sink.
         $sink->close();
     }
 }
