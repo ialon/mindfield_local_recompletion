@@ -220,15 +220,28 @@ class reminder_email_test extends \advanced_testcase {
         $this->set_up_recompletion($course->id, [
             'recompletionunenrolenable' => 1,
             'resetunenrolsuser' => 1,
-            'nextresettime' => time() - DAYSECS
+            'nextresettime' => time() - DAYSECS,
+            'recompletionemailenable' => 1,
+            'recompletionemailsubject' => 'Your certificate has expired',
+            'recompletionemailbody' => 'Your certificate has expired. Please re-enrol to keep it active.',
+            'reminderemailenable' => 1,
+            'reminderemaildays' => 15*DAYSECS,
+            'reminderemailsubject' => 'Your certificate is about to expire',
+            'reminderemailbody' => 'Your certificate will expire in 15 days. Please re-enrol to keep it active.'
         ]);
 
         // Check that the user is enrolled
         $this->assertTrue(is_enrolled(\context_course::instance($course->id), $user, '', true));
 
+        // Clear the email sink.
+        $sink->clear();
+
         // Run scheduled task.
         $task = new \local_recompletion\task\check_recompletion();
         $task->execute();
+
+        // Check that email is only sent once.
+        $this->assertSame(1, $sink->count());
 
         // Check that the user is unenrolled
         $this->assertFalse(is_enrolled(\context_course::instance($course->id), $user, '', true));

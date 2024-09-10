@@ -389,6 +389,16 @@ class check_recompletion extends \core\task\scheduled_task {
         if (!empty($config->resetunenrolsuser) && $config->resetunenrolsuser) {
             $instances = enrol_get_instances($course->id, true);
 
+            $unenrolresets = $config->recompletionunenrolenable;
+
+            $record = new \stdClass();
+            if ($unenrolresets) {
+                // We will unenrol a user, disable recompletionunenrolenable or it will trigger a second reset.
+                $record = $DB->get_record('local_recompletion_config', array('course' => $course->id, 'name' => 'recompletionunenrolenable'));
+                $record->value = 0;
+                $DB->update_record('local_recompletion_config', $record);
+            }
+
             foreach ($instances as $instance) {
                 if (!$ue = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid))) {
                     continue;
@@ -403,6 +413,12 @@ class check_recompletion extends \core\task\scheduled_task {
                     continue;
                 }
                 $plugin->unenrol_user($instance, $ue->userid);
+            }
+
+            if ($unenrolresets) {
+                // Re-enable recompletionunenrolenable.
+                $record->value = 1;
+                $DB->update_record('local_recompletion_config', $record);
             }
         }
 
